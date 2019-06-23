@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Remaining Character Counter | Online Character Counter</title>
+    <meta name="description" content="Very simple online Character counter with copy to clipboard feature!"/>
+    <meta name="keywords" content="counter, character counter, character counter online, created with vue, remaining character counter"/>
+    <meta name="author" content="Nazmul Haque" />
+    <meta name="robots" content="follow"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="vue-2.6.8.js"></script>
+    <script src="vue-clipboard.min.js"></script>
+    <style>
+        .warn{
+            border: 2px solid red;
+        }
+        .form-control.warn:focus{
+            border-color:red
+        }
+        textarea.form-control {
+            min-height: 140px;
+        }
+        h2{ margin: 15px 0;}
+        @media only screen and (max-width: 767px){
+            h2 {
+                font-size: 1.4rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .btn {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1>{{title}}</h1>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="container mt-5 mb-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Paste/Write your content here!</p>
+                    <textarea :class="class_obj" autofocus v-model="user_input" v-on:input="check" placeholder="Paste/Write text..."></textarea>
+                    <br>
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="btn-primary btn" @click="setZero">Clear/Reset</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn-primary btn" @click="copyText">Copy to clipboard</button>
+                        </div>
+                        <div class="col-12">
+                            <h2>(Remaining/Limit) : {{remain}}/{{limit}}</h2>
+                        </div>    
+                    </div>                                    
+                </div>
+                <div class="col-md-12">
+                    <label>Stacked on Limit? Set limit Character here(Insert only number) <input v-model.lazy="limit" class="form-control"></label>
+
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p v-html="copyright"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                limit: 200,
+                user_input: '',
+                class_obj: {
+                    'form-control': true,
+                    'warn' : 0
+                },
+                title: 'Remaining Character Counter',
+                copyright: 'All Rights Reserved by <a href="https://nazmulhaque.com" target="_blank">Nazmul H</a>',
+            },
+            computed:{
+                remain:function(){
+                    return this.limit - this.user_input.length
+                }
+            },
+            methods:{
+                check: function(){
+                   if( this.remain <= 0 ){
+                        this.user_input = this.user_input.substr(0, this.limit)
+                        this.class_obj.warn = true
+                   }else{
+                    this.class_obj.warn = false
+                   }
+                },
+                setZero:function(){
+                    this.user_input= ''
+                },
+                copyText: function(){
+                    this.$copyText(this.user_input).then(function (e) {
+                    alert('Text copied to clipboard!')
+                    console.log(e)
+                    }, function (e) {
+                    alert('Something went wrong, Can not copy!')
+                    console.log(e)
+                    })
+                }
+            }
+        })
+    </script>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>    
+    <script>
+     $('body').on('contextmenu', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		return false;
+        });
+        $(document).on('keydown', function(e) {
+            if (
+                    (e.ctrlKey && (e.keyCode == 85)) ||
+                    (e.ctrlKey && (e.shiftKey && e.keyCode == 73)) ||
+                    (e.ctrlKey && (e.shiftKey && e.keyCode == 75)) ||
+                    (e.metaKey && (e.shiftKey && e.keyCode == 91))
+                    ) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+     </script>
+</body>
+</html>
